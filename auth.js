@@ -2,6 +2,7 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
 
+const HEADLESS = true
 const PORT = 8041; //debugging port
 const EMAIL = ''
 const PASSWORD = ''
@@ -48,8 +49,8 @@ async function logout(browser, origin) {
 
 async function main() {
   const browser = await puppeteer.launch({
-    args: [`--remote-debugging-port=${PORT}`],
-    headless: false,
+    args: [`--remote-debugging-port=${PORT}`, `--no-sandbox`],
+    headless: HEADLESS,
     slowMo: 50,
   });
 

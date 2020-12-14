@@ -49,6 +49,23 @@ See:
 * https://github.com/GoogleChrome/lighthouse/blob/master/docs/authenticated-pages.md
 * https://github.com/GoogleChrome/lighthouse/blob/master/docs/readme.md#using-programmatically
 
+## Running via Docker
+
+To run lighthouse via docker, execute the following:
+```
+# Build docker image
+docker build -t lighthouse-test:latest -f Dockerfile .
+
+# Run image to execute lighthouse
+docker run --name lighthouse-container lighthouse-test:latest
+
+# Get lighthouse report
+docker cp  lighthouse-container:/app/report.html .
+
+# Cleanup and remove container
+docker rm lighthouse-container
+```
+
 ## Enhancements to make
 
 * Setting env vars for: EMAIL, PASSWORD, LOGINURL, TARGETURL
