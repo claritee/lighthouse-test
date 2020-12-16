@@ -24,6 +24,10 @@ See: https://github.com/GoogleChrome/lighthouse#cli-options for more options
 Authenticated pages
 
 ```
+export EMAIL="<email>"
+export PASSWORD="<password>"
+export LOGIN_URL="<login_url>"
+export TARGET_URL="<target_url>"
 node auth.js
 ```
 
@@ -49,8 +53,30 @@ See:
 * https://github.com/GoogleChrome/lighthouse/blob/master/docs/authenticated-pages.md
 * https://github.com/GoogleChrome/lighthouse/blob/master/docs/readme.md#using-programmatically
 
+## Running via Docker
+
+To run lighthouse via docker, execute the following:
+```
+# Build docker image
+docker build -t lighthouse-test:latest -f Dockerfile .
+
+# Set required environment variables
+export EMAIL="<email>"
+export PASSWORD="<password>"
+export LOGIN_URL="<login_url>"
+export TARGET_URL="<target_url>"
+
+# Run image to execute lighthouse
+docker run --name lighthouse-container -e EMAIL -e PASSWORD -e LOGIN_URL -e TARGET_URL lighthouse-test:latest
+
+# Get lighthouse report
+docker cp  lighthouse-container:/app/report.html .
+
+# Cleanup and remove container
+docker rm lighthouse-container
+```
+
 ## Enhancements to make
 
-* Setting env vars for: EMAIL, PASSWORD, LOGINURL, TARGETURL
 * Use of budgets (TODO)
 
