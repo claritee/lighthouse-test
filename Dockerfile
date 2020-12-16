@@ -11,5 +11,3 @@ COPY . .
 
 RUN echo "--- Installing dependencies" && yarn
 CMD echo "--- Running lighthouse" && node auth.js
-
-
