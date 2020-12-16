@@ -4,6 +4,7 @@ RUN apt-get update && \
     apt-get install -y chromium
 
 ENV HOME /app
+ENV HEADLESS true
 WORKDIR $HOME
 
 COPY . .
