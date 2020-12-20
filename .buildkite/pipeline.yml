@@ -1,0 +1,15 @@
+---
+steps:
+  - name: ":lighthouse: Running Frontend Performance Tests :lighthouse:" 
+    command: .buildkite/run-frontend-performance-tests.sh
+    agents:
+      type: aws-buildkite-agent
+      environment: sandpit
+      region: us-east-1 
+    env:
+      AUTH_EMAIL: "test.automation+e2eapitests@safetyculture.io" # User is also used for s12-apis-tests
+      AUTH_PASSWORD: "7c9wHCER/LpLkA=="
+      LOGIN_URL: "https://sandpit-app.safetyculture.com/login.html"
+      TARGET_URL: "https://sandpit-app.safetyculture.com/dashboard"
+    artifact_paths:
+      - "*.html"
