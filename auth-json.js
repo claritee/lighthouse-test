@@ -2,11 +2,12 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
 
-const PORT = 8041; //debugging port
-const EMAIL = ''
-const PASSWORD = ''
-const LOGINURL = ''
-const TARGETURL = ''
+const HEADLESS = process.env.HEADLESS == "true" ? true : false
+const PORT = process.env.PORT || 8041; //debugging port
+const EMAIL = process.env.EMAIL || ''
+const PASSWORD = process.env.PASSWORD || ''
+const LOGINURL = process.env.LOGIN_URL || ''
+const TARGETURL = process.env.TARGET_URL || ''
 
 /**
  * @param {import('puppeteer').Browser} browser
@@ -48,20 +49,20 @@ async function logout(browser, origin) {
 
 async function main() {
   const browser = await puppeteer.launch({
-    args: [`--remote-debugging-port=${PORT}`],
-    headless: false,
+    args: [`--remote-debugging-port=${PORT}`, `--no-sandbox`],
+    headless: HEADLESS,
     slowMo: 50,
   });
 
+  // Setup the browser session to be logged into our site.
   await login(browser, LOGINURL);
 
   const url = TARGETURL;
-  const options = {port: PORT, disableStorageReset: true, output: 'json'}
+  const options = {port: PORT, disableStorageReset: true, output: 'json'};
   const result = await lighthouse(url, options);
 
   await browser.close();
 
-  const reportHtml = result.report;
   fs.writeFileSync('report.json', JSON.stringify(result.lhr, null, 2));
 }
 
