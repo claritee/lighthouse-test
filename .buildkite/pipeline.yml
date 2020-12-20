@@ -12,4 +12,3 @@ steps:
       TARGET_URL: "https://sandpit-app.safetyculture.com/dashboard"
     artifact_paths:
       - "*.html"
-      - "*.json"
