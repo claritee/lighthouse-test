@@ -17,6 +17,8 @@ fi
 docker build -t "${docker_tag}" -f Dockerfile .
 
 trap 'docker rm ${docker_container_name}' EXIT
+
+echo "--- Executing tests against: ${TARGET_URL}"
 docker run --name "${docker_container_name}" \
     -e EMAIL \
     -e PASSWORD \

@@ -5,6 +5,7 @@ steps:
     agents:
       type: aws-buildkite-agent
       environment: sandpit
+      region: us-east-1 
     env:
       AUTH_EMAIL: "test.automation+e2eapitests@safetyculture.io" # User is also used for s12-apis-tests
       AUTH_PASSWORD: "7c9wHCER/LpLkA=="
