@@ -4,10 +4,10 @@ services:
     image: "lighthouse-test:latest"
     container_name: "frontend-performance-tests_lighthouse"
     environment:
-      - EMAIL="${EMAIL}"
-      - PASSWORD="${PASSWORD}"
-      - LOGIN_URL="${LOGIN_URL}"
-      - TARGET_URL="${TARGET_URL}"
+      - EMAIL=${EMAIL}
+      - PASSWORD=${PASSWORD}
+      - LOGIN_URL=${LOGIN_URL}
+      - TARGET_URL=${TARGET_URL}
       - PATHS=/dashboard,/sensors
       - POSTGRES_HOST=postgres
       - POSTGRES_USER=lighthouse
