@@ -12,6 +12,6 @@ steps:
       LOGIN_URL: "https://sandpit-app.safetyculture.com/login.html"
       TARGET_URL: "https://sandpit-app.safetyculture.com/dashboard"
       FRONTEND_REACTOR_BUILD_COMMIT: "${BUILDKITE_COMMIT}" # This will normally be passed in via frontend-reactor pipeline trigger step
-      FRONTEND_REACTOR_BUILD_NUMBER: "${BUILDKITE_TRIGGERED_FROM_BUILD_NUMBER}"
+      FRONTEND_REACTOR_BUILD_NUMBER: "${BUILDKITE_BUILD_NUMBER}" # This will normally be passed in via frontend-reactor pipeline trigger step
     artifact_paths:
       - "results/*"

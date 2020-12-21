@@ -9,7 +9,7 @@ export PASSWORD=${AUTH_PASSWORD:?"AUTH_PASSWORD env var must be set"}
 export LOGIN_URL=${LOGIN_URL:?"LOGIN_URL env var must be set"}
 export TARGET_URL=${TARGET_URL:?"TARGET_URL env var must be set"}
 export BUILD_COMMIT=${FRONTEND_REACTOR_BUILD_COMMIT:?"FRONTEND_REACTOR_BUILD_COMMIT env var must be set"}
-export BUILD_NUMBER=${BUILDKITE_TRIGGERED_FROM_BUILD_NUMBER:?"BUILDKITE_TRIGGERED_FROM_BUILD_NUMBER env var must be set"}
+export BUILD_NUMBER=${FRONTEND_REACTOR_BUILD_NUMBER:?"FRONTEND_REACTOR_BUILD_NUMBER env var must be set"}
 export PATHS="/dashboard,/templates,/inspections,/schedule,/tasks,/issues,/sensors,/analytics"
 
 docker_container_name="frontend-performance-container"
