@@ -8,6 +8,9 @@ export EMAIL=${AUTH_EMAIL:?"AUTH_EMAIL env var must be set"}
 export PASSWORD=${AUTH_PASSWORD:?"AUTH_PASSWORD env var must be set"}
 export LOGIN_URL=${LOGIN_URL:?"LOGIN_URL env var must be set"}
 export TARGET_URL=${TARGET_URL:?"TARGET_URL env var must be set"}
+export BUILD_COMMIT=${FRONTEND_REACTOR_BUILD_COMMIT:?"FRONTEND_REACTOR_BUILD_COMMIT env var must be set"}
+export BUILD_NUMBER=${FRONTEND_REACTOR_BUILD_NUMBER:?"FRONTEND_REACTOR_BUILD_NUMBER env var must be set"}
+export PATHS="/dashboard,/templates,/inspections,/schedule,/tasks,/issues,/sensors,/analytics"
 
 docker_container_name="frontend-performance-container"
 docker_tag="${docker_container_name}:latest"
@@ -22,8 +25,14 @@ echo "--- Executing tests against: ${TARGET_URL}"
 docker run --name "${docker_container_name}" \
     -e EMAIL \
     -e PASSWORD \
+    -e PATHS \
     -e LOGIN_URL \
     -e TARGET_URL \
+    -e BUILD_COMMIT \
+    -e BUILD_NUMBER \
     "${docker_tag}"
 
-docker cp "${docker_container_name}:/app/report.html" .
+docker cp "${docker_container_name}:/app/results" .
+
+# Run whatever we need to parse results and push to Postgres DB
+# Fetch DB credentials from Consul
