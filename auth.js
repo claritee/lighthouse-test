@@ -1,6 +1,8 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
+const { v4: uuidv4 } = require('uuid');
+const { Client } = require('pg');
 
 const HEADLESS = process.env.HEADLESS == "true" ? true : false;
 const PORT = process.env.PORT || 8041;
@@ -10,6 +12,15 @@ const LOGIN_URL = process.env.LOGIN_URL || '';
 const TARGET_URL = process.env.TARGET_URL || ''
 const RESULTS_DIR ='./results';
 const PATHS = process.env.PATHS || '/dashboard';
+
+const POSTGRES_HOST = process.env.POSTGRES_HOST || 'localhost'
+const POSTGRES_USER = process.env.POSTGRES_USER || ''
+const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD || ''
+const POSTGRES_DB = process.env.POSTGRES_DB || ''
+const POSTGRES_PORT = process.env.POSTGRES_PORT || 5432
+
+const BUILD_COMMIT = process.env.BUILD_COMMIT || ''
+const BUILD_NUMBER = process.env.BUILD_NUMBER || ''
 
 /**
  * @param {import('puppeteer').Browser} browser
@@ -49,6 +60,50 @@ async function logout(browser, origin) {
   await page.close();
 }
 
+function extractResultMetrics(lighthouseResult) {
+  const { audits } = lighthouseResult;
+  const metrics = {}
+  const metricKeys = [
+    'first-contentful-paint',
+    'speed-index',
+    'largest-contentful-paint',
+    'interactive',
+    'total-blocking-time',
+    'cumulative-layout-shift',
+  ]
+
+  metricKeys.forEach((metricKey) => {
+    metrics[metricKey] = audits[metricKey];
+  });
+
+  return metrics;
+}
+
+async function insertMetric(dbClient, targetDomain, path, metricType, metricValue, commitHash, buildNumber, createdAt) {
+  const id = uuidv4();
+
+  const text = "INSERT INTO lighthouse_metrics(id, target_domain, path, metric_type, metric_value, commit_hash, build_number, created_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8);"
+  const values = [
+    id,
+    targetDomain,
+    path,
+    metricType,
+    metricValue,
+    commitHash,
+    buildNumber,
+    createdAt
+  ];
+
+  console.log(`-- ${metricType}: ${metricValue}`);
+
+  try {
+    await dbClient.query(text, values);
+  } catch (e) {
+    console.log(`Error storing lighthouse metric: ${e.message}\nText: ${text}\nValues: ${values}`);
+    throw e
+  }
+}
+
 async function main() {
   if (!fs.existsSync(RESULTS_DIR)) {
     fs.mkdirSync(RESULTS_DIR, (err) => {
@@ -69,7 +124,6 @@ async function main() {
 
   console.log("Paths to test: " + paths);
   for (let path of paths) {
-
     let url = TARGET_URL + path;
     console.log("Testing " + url);
 
@@ -80,8 +134,45 @@ async function main() {
     let dateStr = date.getFullYear() + "" + (date.getMonth() + 1) + date.getDate() + "-" + date.getHours() + date.getMinutes() + date.getSeconds();
 
     let file = RESULTS_DIR + path + '-' + dateStr + ".json";
-    fs.writeFileSync(file, JSON.stringify(result.lhr, null, 2));
+
+    const lighthouseResult = result.lhr;
+    const metrics = extractResultMetrics(lighthouseResult)
+
+    fs.writeFileSync(file, JSON.stringify(lighthouseResult, null, 2));
     console.log("Results: " + file);
+
+    // Get DB client
+    const dbClient = new Client({
+      user: POSTGRES_USER,
+      host: POSTGRES_HOST,
+      database: POSTGRES_DB,
+      password: POSTGRES_PASSWORD,
+      port: POSTGRES_PORT,
+    });
+    await dbClient.connect();
+
+    const timeNow = date.toISOString();
+
+    // Iterate each metric, and store to db
+    const keys = Object.keys(metrics);
+      for (let idx = 0; idx < keys.length; idx++) {
+      const metricKey = keys[idx];
+      const metric = metrics[metricKey];
+
+      await insertMetric(
+        dbClient,
+        TARGET_URL,
+        path,
+        metricKey,
+        metric['numericValue'].toFixed(4),
+        BUILD_COMMIT,
+        BUILD_NUMBER,
+        timeNow
+      );
+    }
+
+    // Release db connection
+    await dbClient.end();
   }
 
   await browser.close();
