@@ -76,6 +76,36 @@ docker cp  lighthouse-container:/app/report.html .
 docker rm lighthouse-container
 ```
 
+## Running Docker Compose with Postgres and Grafana
+First time setup to setup grafana with postgres source
+```
+# Bring up postgres and grafana locally
+docker-compose up
+
+# You can not interact with postgres directly on `localhost:5432`
+# Credentials: lighthouse/lighthouse
+# Database: lighthouse
+
+# Login to Grafana and configure postgres datasource
+Go to http://localhost:3000
+USERNAME=admin
+PASSWORD=pass
+
+Go to http://localhost:3000/datasources
+1. Add data source
+2. Search for PostgreSQL
+3. Configure data source:
+    - Name: Lighthouse PostgreSQL
+    - Host: postgres:5432
+    - Database: lighthouse
+    - User: lighthouse
+    - Password: lighthouse
+    - SSL Mode: disable
+    - PostgreSQL Details Version: 12
+
+# You can now configure new dashboard panels by selecting the "Lighthouse PostgreSQL" as the datasource
+```
+
 ## Enhancements to make
 
 * Use of budgets (TODO)
