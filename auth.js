@@ -2,12 +2,14 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
 
-const HEADLESS = process.env.HEADLESS == "true" ? true : false
-const PORT = process.env.PORT || 8041; //debugging port
-const EMAIL = process.env.EMAIL || ''
-const PASSWORD = process.env.PASSWORD || ''
-const LOGINURL = process.env.LOGIN_URL || ''
-const TARGETURL = process.env.TARGET_URL || ''
+const HEADLESS = process.env.HEADLESS == "true" ? true : false;
+const PORT = process.env.PORT || 8041;
+const EMAIL = process.env.EMAIL || '';
+const PASSWORD = process.env.PASSWORD || '';
+const LOGIN_URL = process.env.LOGIN_URL || '';
+const TARGET_URL = process.env.TARGET_URL || ''
+const RESULTS_DIR ='./results';
+const PATHS = process.env.PATHS || '/dashboard';
 
 /**
  * @param {import('puppeteer').Browser} browser
@@ -48,6 +50,13 @@ async function logout(browser, origin) {
 }
 
 async function main() {
+  if (!fs.existsSync(RESULTS_DIR)) {
+    fs.mkdirSync(RESULTS_DIR, (err) => {
+      if (err) throw err;
+    });
+  }
+
+  const paths = PATHS.split(",");
   const browser = await puppeteer.launch({
     args: [`--remote-debugging-port=${PORT}`, `--no-sandbox`],
     headless: HEADLESS,
@@ -55,17 +64,27 @@ async function main() {
   });
 
   // Setup the browser session to be logged into our site.
-  await login(browser, LOGINURL);
+  console.log('Logging in ' + LOGIN_URL);
+  await login(browser, LOGIN_URL);
 
-  const url = TARGETURL;
-  const options = {port: PORT, disableStorageReset: true, output: 'html'};
-  const result = await lighthouse(url, options);
+  console.log("Paths to test: " + paths);
+  for (let path of paths) {
+
+    let url = TARGET_URL + path;
+    console.log("Testing " + url);
+
+    let options = {port: PORT, disableStorageReset: true, output: 'json'}
+    let result = await lighthouse(url, options);
+
+    let date = new Date();
+    let dateStr = date.getFullYear() + "" + (date.getMonth() + 1) + date.getDate() + "-" + date.getHours() + date.getMinutes() + date.getSeconds();
+
+    let file = RESULTS_DIR + path + '-' + dateStr + ".json";
+    fs.writeFileSync(file, JSON.stringify(result.lhr, null, 2));
+    console.log("Results: " + file);
+  }
 
   await browser.close();
-
-  const reportHtml = result.report;
-  fs.writeFileSync('report.html', reportHtml);
-  
 }
 
 if (require.main === module) {
