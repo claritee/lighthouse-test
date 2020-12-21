@@ -33,3 +33,6 @@ docker run --name "${docker_container_name}" \
     "${docker_tag}"
 
 docker cp "${docker_container_name}:/app/results" .
+
+# Run whatever we need to parse results and push to Postgres DB
+# Fetch DB credentials from Consul
