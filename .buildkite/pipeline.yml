@@ -1,6 +1,25 @@
 ---
 steps:
   - name: ":lighthouse: Running Frontend Performance Tests :lighthouse:" 
+    branches: "!master"
+    command: .buildkite/run-frontend-performance-tests.sh
+    agents:
+      queue: sk8s
+      environment: development
+      region: ap-southeast-2
+      cluster: eks01-ap-southeast-2-development
+    env:
+      AUTH_EMAIL: "test.automation+e2eapitests@safetyculture.io" # User is also used for s12-apis-tests
+      AUTH_PASSWORD: "7c9wHCER/LpLkA=="
+      LOGIN_URL: "https://sandpit-app.safetyculture.com/login.html"
+      TARGET_URL: "https://sandpit-app.safetyculture.com/dashboard"
+      FRONTEND_REACTOR_BUILD_COMMIT: "${BUILDKITE_COMMIT}" # This will normally be passed in via frontend-reactor pipeline trigger step
+      FRONTEND_REACTOR_BUILD_NUMBER: "${BUILDKITE_BUILD_NUMBER}" # This will normally be passed in via frontend-reactor pipeline trigger step
+    artifact_paths:
+      - "results/*"
+
+  - name: ":lighthouse: Running Frontend Performance Tests :lighthouse:" 
+    branches: master
     command: .buildkite/run-frontend-performance-tests.sh
     agents:
       type: aws-buildkite-agent
