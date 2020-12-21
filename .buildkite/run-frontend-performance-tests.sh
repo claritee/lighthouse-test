@@ -19,8 +19,9 @@ if [[ "${CI:=false}" == true ]]; then
 fi
 docker build -t "${docker_tag}" -f Dockerfile .
 
-trap 'docker rm ${docker_container_name}' EXIT
+# Fetch DB credentials from Consul
 
+trap 'docker rm ${docker_container_name}' EXIT
 echo "--- Executing tests against: ${TARGET_URL}"
 docker run --name "${docker_container_name}" \
     -e EMAIL \
@@ -33,6 +34,3 @@ docker run --name "${docker_container_name}" \
     "${docker_tag}"
 
 docker cp "${docker_container_name}:/app/results" .
-
-# Run whatever we need to parse results and push to Postgres DB
-# Fetch DB credentials from Consul
