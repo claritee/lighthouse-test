@@ -10,4 +10,4 @@ WORKDIR $HOME
 COPY . .
 
 RUN echo "--- Installing dependencies" && yarn
-CMD echo "--- Running lighthouse" && node auth-json.js
+CMD echo "--- Running lighthouse" && node auth.js
