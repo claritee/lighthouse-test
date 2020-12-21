@@ -1,0 +1,30 @@
+version: "3"
+services:
+  postgres:
+    image: "postgres:12.2"
+    container_name: "frontend-performance-tests_postgres"
+    environment:
+      - POSTGRES_USER=lighthouse
+      - POSTGRES_PASSWORD=lighthouse
+      - POSTGRES_DB=lighthouse
+    ports:
+      - "5432:5432"
+
+  flyway:
+    image: flyway/flyway:6.0.4
+    command: -user="lighthouse" -password="lighthouse" -url="jdbc:postgresql://postgres/lighthouse" -locations="filesystem:/flyway/sql" -connectRetries=60 migrate info
+    volumes:
+      - ./sql:/flyway/sql
+    depends_on:
+      - postgres
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=pass
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./grafana_data:/var/lib/grafana"
+    depends_on:
+      - postgres
