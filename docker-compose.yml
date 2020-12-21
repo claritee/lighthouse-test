@@ -1,5 +1,24 @@
 version: "3"
 services:
+  lighthouse:
+    image: "lighthouse-test:latest"
+    container_name: "frontend-performance-tests_lighthouse"
+    environment:
+      - EMAIL="${EMAIL}"
+      - PASSWORD="${PASSWORD}"
+      - LOGIN_URL="${LOGIN_URL}"
+      - TARGET_URL="${TARGET_URL}"
+      - PATHS=/dashboard,/sensors
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=lighthouse
+      - POSTGRES_PASSWORD=lighthouse
+      - POSTGRES_DB=lighthouse
+      - POSTGRES_PORT=5432
+      - BUILD_COMMIT=abcd123
+      - BUILD_NUMBER=1
+    depends_on:
+      - flyway
+
   postgres:
     image: "postgres:12.2"
     container_name: "frontend-performance-tests_postgres"
@@ -20,6 +39,7 @@ services:
 
   grafana:
     image: grafana/grafana:latest
+    container_name: "frontend-performance-tests_grafana"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=pass
     ports:
