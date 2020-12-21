@@ -63,7 +63,27 @@ async function main() {
 
   await browser.close();
 
-  fs.writeFileSync('report.json', JSON.stringify(result.lhr, null, 2));
+  const lighthouseResult = result.lhr;
+
+  const metrics = extractResultMetrics(lighthouseResult)
+
+  console.log(metrics);
+
+  fs.writeFileSync('report.json', JSON.stringify(lighthouseResult, null, 2));
+  fs.writeFileSync('metrics.json', JSON.stringify(metrics, null, 2));
+}
+
+function extractResultMetrics(lighthouseResult) {
+  const { audits } = lighthouseResult;
+
+  return {
+    firstContentfulPaint: audits['first-contentful-paint'],
+    speedIndex: audits['speed-index'],
+    largestContentfulPaint: audits['largest-contentful-paint'],
+    timeToInteractive: audits['interactive'],
+    totalBlockingTime: audits['total-blocking-time'],
+    cumulativeLayoutShift: audits['cumulative-layout-shift'],
+  }
 }
 
 if (require.main === module) {
