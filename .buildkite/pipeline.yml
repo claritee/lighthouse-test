@@ -7,7 +7,7 @@ steps:
       queue: sk8s
       environment: development
       region: ap-southeast-2
-      cluster: eks01-ap-southeast-2-development
+      eks_cluster: eks01-ap-southeast-2-development
     env:
       AUTH_EMAIL: "test.automation+e2eapitests@safetyculture.io" # User is also used for s12-apis-tests
       AUTH_PASSWORD: "7c9wHCER/LpLkA=="
