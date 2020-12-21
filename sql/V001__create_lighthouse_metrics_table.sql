@@ -8,6 +8,6 @@ CREATE TABLE lighthouse_metrics
      metric_value  VARCHAR NOT NULL, 
      commit_hash   VARCHAR NOT NULL, 
      build_number  VARCHAR NOT NULL, 
-     created_at    TIMESTAMP NOT NULL, 
+     created_at    TIMESTAMP NOT NULL
   ); 
 -- Might need to create indexes later on 
