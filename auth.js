@@ -79,15 +79,16 @@ function extractResultMetrics(lighthouseResult) {
   return metrics;
 }
 
-async function insertMetric(dbClient, targetDomain, path, metricType, metricValue, commitHash, buildNumber, createdAt) {
+async function insertMetric(dbClient, targetDomain, path, metricType, metricUnit, metricValue, commitHash, buildNumber, createdAt) {
   const id = uuidv4();
 
-  const text = "INSERT INTO lighthouse_metrics(id, target_domain, path, metric_type, metric_value, commit_hash, build_number, created_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8);"
+  const text = "INSERT INTO lighthouse_metrics(id, target_domain, path, metric_type, metric_unit, metric_value, commit_hash, build_number, created_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);"
   const values = [
     id,
     targetDomain,
     path,
     metricType,
+    metricUnit,
     metricValue,
     commitHash,
     buildNumber,
@@ -164,6 +165,7 @@ async function main() {
         TARGET_URL,
         path,
         metricKey,
+        metric['numericUnit'],
         metric['numericValue'].toFixed(4),
         BUILD_COMMIT,
         BUILD_NUMBER,
