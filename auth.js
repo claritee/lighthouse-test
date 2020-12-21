@@ -3,6 +3,8 @@ const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
 const { v4: uuidv4 } = require('uuid');
 const { Client } = require('pg');
+const config = require('./config.js');
+
 
 const HEADLESS = process.env.HEADLESS == "true" ? true : false;
 const PORT = process.env.PORT || 8041;
@@ -128,7 +130,7 @@ async function main() {
     console.log("Testing " + url);
 
     let options = {port: PORT, disableStorageReset: true, output: 'json'}
-    let result = await lighthouse(url, options);
+    let result = await lighthouse(url, options, config);
 
     let date = new Date();
     let dateStr = date.getFullYear() + "" + (date.getMonth() + 1) + date.getDate() + "-" + date.getHours() + date.getMinutes() + date.getSeconds();

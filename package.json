@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "lighthouse": "^6.5.0",
+    "lighthouse": "^7.0.0",
     "pg": "^8.5.1",
     "puppeteer": "^5.5.0",
     "uuid": "^8.3.2"
