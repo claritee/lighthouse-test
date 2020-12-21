@@ -12,7 +12,7 @@ steps:
       AUTH_EMAIL: "test.automation+e2eapitests@safetyculture.io" # User is also used for s12-apis-tests
       AUTH_PASSWORD: "7c9wHCER/LpLkA=="
       LOGIN_URL: "https://sandpit-app.safetyculture.com/login.html"
-      TARGET_URL: "https://sandpit-app.safetyculture.com/dashboard"
+      TARGET_URL: "https://sandpit-app.safetyculture.com"
       FRONTEND_REACTOR_BUILD_COMMIT: "${BUILDKITE_COMMIT}" # This will normally be passed in via frontend-reactor pipeline trigger step
       FRONTEND_REACTOR_BUILD_NUMBER: "${BUILDKITE_BUILD_NUMBER}" # This will normally be passed in via frontend-reactor pipeline trigger step
     artifact_paths:
@@ -29,7 +29,7 @@ steps:
       AUTH_EMAIL: "test.automation+e2eapitests@safetyculture.io" # User is also used for s12-apis-tests
       AUTH_PASSWORD: "7c9wHCER/LpLkA=="
       LOGIN_URL: "https://sandpit-app.safetyculture.com/login.html"
-      TARGET_URL: "https://sandpit-app.safetyculture.com/dashboard"
+      TARGET_URL: "https://sandpit-app.safetyculture.com"
       FRONTEND_REACTOR_BUILD_COMMIT: "${BUILDKITE_COMMIT}" # This will normally be passed in via frontend-reactor pipeline trigger step
       FRONTEND_REACTOR_BUILD_NUMBER: "${BUILDKITE_BUILD_NUMBER}" # This will normally be passed in via frontend-reactor pipeline trigger step
     artifact_paths:
