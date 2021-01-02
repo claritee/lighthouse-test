@@ -1,6 +1,8 @@
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
+const config = require('./config');
+const { fromLog } = require('chrome-har-capturer');
 
 const HEADLESS = process.env.HEADLESS == "true" ? true : false
 const PORT = process.env.PORT || 8041; //debugging port
@@ -58,15 +60,26 @@ async function main() {
   await login(browser, LOGINURL);
 
   const url = TARGETURL;
-  const options = {port: PORT, disableStorageReset: true, output: 'html'};
-  const result = await lighthouse(url, options);
+  const options = {port: PORT, disableStorageReset: true, output: 'html'}; //, gatherMode: true
+  const result = await lighthouse(url, options, config);
 
-  await browser.close();
+  // HAR
+  const { artifacts: { devtoolsLogs: { defaultPass } } } = result;
+  const har = await fromLog(url, defaultPass);
+  fs.writeFileSync('page.har', JSON.stringify(har, null, 2));
 
+  // Screenshots
+  const { lhr: { audits } } = result;
+  const finalScreenshotFile = `screenshot-final.jpg`;
+  const finalScreenshot = audits['final-screenshot'].details.data.split(';base64,').pop();
+  fs.writeFileSync(finalScreenshotFile, finalScreenshot, { encoding: 'base64' });
+
+  // Results
   const reportHtml = result.report;
   fs.writeFileSync('report.html', reportHtml);
   fs.writeFileSync('report.json', JSON.stringify(result.lhr, null, 2));
-  
+
+  await browser.close();
 }
 
 if (require.main === module) {

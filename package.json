@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "chrome-har-capturer": "^0.13.9",
     "lighthouse": "^7.0.0",
     "puppeteer": "^5.5.0"
   }

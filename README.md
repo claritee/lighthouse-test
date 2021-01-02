@@ -76,7 +76,29 @@ docker cp  lighthouse-container:/app/report.html .
 docker rm lighthouse-container
 ```
 
-## Enhancements to make
+## Config
 
-* Use of budgets (TODO)
+See: 
 
+* https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
+* https://github.com/GoogleChrome/lighthouse/blob/888bd6dc9d927a734a8e20ea8a0248baa5b425ed/typings/externs.d.ts#L82-L119
+* https://github.com/GoogleChrome/lighthouse/blob/master/docs/readme.md
+
+### Constants
+
+For example device size, throttling etc
+
+https://github.com/GoogleChrome/lighthouse/blob/8f500e00243e07ef0a80b39334bedcc8ddc8d3d0/lighthouse-core/config/config.js
+
+## Integrations with Web Perf Services
+
+https://github.com/GoogleChrome/lighthouse
+
+## Audits and Artifacts
+
+https://www.debugbear.com/blog/custom-lighthouse-audits
+
+## Other Resources
+
+* Simple Guide: https://web.dev/lighthouse-ci/
+* HAR viewer: https://leonardofaria.net/2020/11/30/creating-har-files-with-lighthouse/
