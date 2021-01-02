@@ -65,6 +65,7 @@ async function main() {
 
   const reportHtml = result.report;
   fs.writeFileSync('report.html', reportHtml);
+  fs.writeFileSync('report.json', JSON.stringify(result.lhr, null, 2));
   
 }
 
